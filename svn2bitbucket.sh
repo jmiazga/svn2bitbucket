@@ -13,7 +13,7 @@ else
 	set -x
 	mkdir "$bitbucketRepoName"
 	cd "$bitbucketRepoName"
-	svn2git $svnUrl --trunk / --nobranches --notags
+	svn2git $svnUrl --trunk / --nobranches --notags -v
 	curl -k -X POST --user $bitbucketUserName:$bitbucketPassword "https://api.bitbucket.org/1.0/repositories" -d "name=$bitbucketRepoName" -d "is_private='true'"
 	git remote add origin git@bitbucket.org:$bitbucketUserName/$bitbucketRepoNameNoSpaces.git
 	git push -u origin master
