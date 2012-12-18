@@ -2,7 +2,7 @@
 
 function usage_and_exit()
 {
-    echo "$0 -s <svnUrl> -n <bitbucketRepoName> -u <bitbucketUserName> -p <bitbucketPassword>"
+    echo "$0 -s <svnUrl> -n <bitbucketRepoName> -u <bitbucketUserName>"
     exit 1;
 }
 
@@ -12,7 +12,7 @@ bitbucketRepoNameNoSpaces=
 bitbucketUserName=
 bitbucketPassword=
 
-while getopts s:n:u:p: flag
+while getopts s:n:u: flag
 do
     case $flag in
         s)
@@ -22,22 +22,21 @@ do
 	    bitbucketRepoNameNoSpaces=${bitbucketRepoName// /-};;
         u)
             bitbucketUserName=$OPTARG;;
-        p)
-            bitbucketPassword=$OPTARG;;
         ?)
             usage_and_exit;;
     esac
 done
 
-if [ -z "$svnUrl" ] || [ -z "$bitbucketRepoName" ] || [ -z "$bitbucketUserName" ] || [ -z "$bitbucketPassword" ];
+if [ -z "$svnUrl" ] || [ -z "$bitbucketRepoName" ] || [ -z "$bitbucketUserName" ];
 then
-    echo "missing a required parameter (svnUrl, bitbucketRepoName, bitbucketUserName and bitbucketPassword are required)"
+    echo "missing a required parameter (svnUrl, bitbucketRepoName and bitbucketUserName are required)"
     usage_and_exit
 fi
 
 command -v svn2git >/dev/null 2>&1 || { echo >&2 "I require svn2git but it's not installed.  Aborting."; exit 1; }
 
 set -x
+read -s -p "Enter Bitbucket Password: " bitbucketPassword
 mkdir "$bitbucketRepoName"
 cd "$bitbucketRepoName"
 svn2git $svnUrl --trunk / --nobranches --notags -v
